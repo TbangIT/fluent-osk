@@ -1,1 +1,0 @@
-/home/tbang/.local/share/gnome-shell/extensions/fluent-osk@tbang/keyboard.js

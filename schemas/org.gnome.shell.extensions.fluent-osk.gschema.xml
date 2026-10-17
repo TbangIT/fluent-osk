@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.fluent-osk" path="/org/gnome/shell/extensions/fluent-osk/">
+    <key name="keyboard-visible" type="b">
+      <default>false</default>
+      <summary>Whether the keyboard is currently visible</summary>
+    </key>
+    <key name="height-percent" type="i">
+      <default>34</default>
+      <summary>Height percentage of screen</summary>
+    </key>
+    <key name="width-percent" type="i">
+      <default>80</default>
+      <summary>Width percentage of screen</summary>
+    </key>
+    <key name="key-radius" type="i">
+      <default>8</default>
+      <summary>Key corner radius in pixels</summary>
+    </key>
+    <key name="key-gap" type="i">
+      <default>4</default>
+      <summary>Legacy gap between keys in pixels</summary>
+    </key>
+    <key name="key-gap-x" type="i">
+      <default>4</default>
+      <summary>Horizontal gap between keys in pixels</summary>
+    </key>
+    <key name="key-gap-y" type="i">
+      <default>4</default>
+      <summary>Vertical gap between keys in pixels</summary>
+    </key>
+    <key name="number-row-gap" type="i">
+      <default>8</default>
+      <summary>Gap separating number row from QWERTY row in pixels</summary>
+    </key>
+    <key name="padding-bottom" type="i">
+      <default>8</default>
+      <summary>Padding or margin from the bottom edge in pixels</summary>
+    </key>
+    <key name="repeat-delay" type="i">
+      <default>320</default>
+      <summary>Delay before key repeat starts in ms</summary>
+    </key>
+    <key name="repeat-interval" type="i">
+      <default>36</default>
+      <summary>Interval between key repeats in ms</summary>
+    </key>
+    <key name="space-slider-sensitivity" type="i">
+      <default>16</default>
+      <summary>Pixels of drag on spacebar per cursor step</summary>
+    </key>
+    <key name="backspace-slider-sensitivity" type="i">
+      <default>18</default>
+      <summary>Pixels of drag on backspace per character selected backwards</summary>
+    </key>
+    <key name="play-sound" type="b">
+      <default>true</default>
+      <summary>Play click sound on key press</summary>
+    </key>
+    <key name="show-panel-button" type="b">
+      <default>true</default>
+      <summary>Show keyboard toggle icon in top panel</summary>
+    </key>
+    <key name="layout-variant" type="s">
+      <default>"it"</default>
+      <summary>Keyboard layout: it, us, custom</summary>
+    </key>
+    <key name="dock-bottom" type="b">
+      <default>true</default>
+      <summary>Dock keyboard to bottom of screen</summary>
+    </key>
+    <key name="dock-full-strip" type="b">
+      <default>false</default>
+      <summary>Cover entire bottom of screen and push/resize windows above (strut mode)</summary>
+    </key>
+    <key name="full-strip-centered-keys" type="b">
+      <default>false</default>
+      <summary>In full-strip mode, keep keys at normal width centered with left and right margins</summary>
+    </key>
+    <key name="custom-layout-token" type="i">
+      <default>0</default>
+      <summary>Token bumped when custom layout is updated to trigger live reloads</summary>
+    </key>
+    <key name="smart-auto-pairs" type="b">
+      <default>true</default>
+      <summary>Automatically close bracket and quote pairs, cursor inside and skip out on closing press</summary>
+    </key>
+    <key name="modified-key-bg-color" type="s">
+      <default>""</default>
+      <summary>Custom background color for keys that change symbol during active modifiers (AltGr, Shift, FN)</summary>
+    </key>
+    <key name="modified-key-text-color" type="s">
+      <default>""</default>
+      <summary>Custom text color for keys that change symbol during active modifiers (AltGr, Shift, FN)</summary>
+    </key>
+    <key name="font-family" type="s">
+      <default>""</default>
+      <summary>Custom font family for key labels (empty = built-in high-legibility stack: Atkinson Hyperlegible Next)</summary>
+    </key>
+    <key name="font-scale" type="i">
+      <range min="80" max="160"/>
+      <default>100</default>
+      <summary>Text size scale for key labels, in percent</summary>
+    </key>
+  </schema>
+</schemalist>

@@ -1,0 +1,19 @@
+{
+  "name": "Fluent OSK",
+  "description": "Windows 11 inspired, ultra-fluid on-screen keyboard with TKL compact layout, gesture cursor scrubbing and custom repeat rates.",
+  "uuid": "fluent-osk@tbang",
+  "settings-schema": "org.gnome.shell.extensions.fluent-osk",
+  "session-modes": [
+    "user",
+    "unlock-dialog"
+  ],
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48",
+    "49",
+    "50"
+  ],
+  "version": 1
+}

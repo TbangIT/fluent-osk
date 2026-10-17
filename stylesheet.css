@@ -1,0 +1,261 @@
+/* Fluent OSK - Windows 11 Touch Keyboard Styling
+ *
+ * Accessibilità: il font di default è Atkinson Hyperlegible (progettato dal
+ * Braille Institute per bassa visione / astigmatismo, con lettere molto
+ * distinguibili, utile anche con dislessia). Se non è disponibile si ricade
+ * su font a bassa ambiguità. Contrasto testo/tasto > 12:1.
+ */
+
+.fluent-osk-container {
+    background-color: rgba(22, 22, 26, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px 12px 0 0;
+    box-shadow: none;
+    padding: 6px 12px 8px 12px;
+}
+
+.fluent-osk-floating {
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+.fluent-osk-full-strip {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.24);
+    box-shadow: none;
+}
+
+/* Header toolbar */
+.fluent-osk-header {
+    height: 28px;
+    margin-bottom: 4px;
+}
+
+.fluent-osk-handle {
+    width: 90px;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 3px;
+    margin: 2px 0;
+}
+
+.fluent-osk-handle:hover {
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.fluent-osk-header-btn {
+    min-width: 32px;
+    height: 24px;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    background-color: transparent;
+    padding: 0 6px;
+    margin: 0 2px;
+}
+
+.fluent-osk-header-btn:hover {
+    background-color: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+}
+
+.fluent-osk-header-btn:active {
+    background-color: rgba(255, 255, 255, 0.26);
+}
+
+.fluent-osk-header-btn.active,
+.fluent-osk-header-btn-active {
+    background-color: rgba(0, 120, 212, 0.45);
+    color: #bfe8ff;
+    border: 1px solid rgba(0, 150, 255, 0.7);
+}
+
+.fluent-osk-header-btn-disabled {
+    opacity: 0.45;
+}
+
+/* Row containers */
+.fluent-osk-row {
+    margin: 0;
+    padding: 0;
+}
+
+/* Keycaps */
+.fluent-osk-key {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: normal;
+    letter-spacing: 0.4px;
+    border-radius: 7px;
+    border-top: 1px solid rgba(255, 255, 255, 0.28);
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+    border-right: 1px solid rgba(255, 255, 255, 0.18);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.6);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    padding: 0;
+    text-align: center;
+}
+
+.fluent-osk-key:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+.fluent-osk-key.pressed,
+.fluent-osk-key:active {
+    background-color: rgba(255, 255, 255, 0.34);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+/* Function & modifier keys */
+.fluent-osk-key-fn,
+.fluent-osk-key-mod {
+    background-color: rgba(255, 255, 255, 0.07);
+    font-size: 17px;
+    font-weight: normal;
+    color: #ffffff;
+}
+
+/* Active toggled modifier (Caps Lock / Shift / Alt Gr active) */
+.fluent-osk-key-active {
+    background-color: #0a6fd0 !important;
+    border-color: #4aa3f0 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 8px rgba(0, 120, 212, 0.7) !important;
+}
+
+/* Modifier-influenced key styles */
+/* 1. Maiusc / Shift single modifier: Pure grey */
+.fluent-osk-key-mod-shift,
+.fluent-osk-key-modified-level1 {
+    background-color: rgba(255, 255, 255, 0.22) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.6) !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    font-weight: normal;
+}
+
+/* 2. AltGr single modifier: Subtle dark-green infused grey */
+.fluent-osk-key-mod-altgr {
+    background-color: rgba(45, 95, 62, 0.7) !important;
+    border-top: 1px solid rgba(110, 195, 140, 0.55) !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.6) !important;
+    border-left: 1px solid rgba(110, 195, 140, 0.35) !important;
+    border-right: 1px solid rgba(110, 195, 140, 0.35) !important;
+    color: #ffffff !important;
+    font-weight: normal;
+}
+
+/* 3. Shift + AltGr combo: Slightly lighter greenish-grey */
+.fluent-osk-key-mod-both,
+.fluent-osk-key-modified-level2 {
+    background-color: rgba(75, 135, 95, 0.75) !important;
+    border-top: 1px solid rgba(140, 225, 170, 0.65) !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.6) !important;
+    border-left: 1px solid rgba(140, 225, 170, 0.4) !important;
+    border-right: 1px solid rgba(140, 225, 170, 0.4) !important;
+    color: #ffffff !important;
+    font-weight: normal;
+    box-shadow: 0 0 6px rgba(80, 160, 110, 0.4);
+}
+
+/* 4. FN modifier on number row: Elevated neutral grey */
+.fluent-osk-key-mod-fn {
+    background-color: rgba(255, 255, 255, 0.24) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.42) !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.6) !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.26) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.26) !important;
+    color: #ffffff !important;
+    font-weight: normal;
+}
+
+/* Spacebar */
+.fluent-osk-space {
+    font-size: 17px;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+/* Spacebar during cursor scrubbing */
+.fluent-osk-space-sliding {
+    background-color: rgba(0, 120, 212, 0.45);
+    border: 1px solid #2b9bff;
+    color: #d6f0ff;
+    font-weight: normal;
+    box-shadow: 0 0 10px rgba(0, 120, 212, 0.55);
+}
+
+/* Backspace during backward text selection gesture */
+.fluent-osk-backspace-sliding {
+    background-color: rgba(200, 20, 35, 0.65);
+    border: 1px solid #ff4d5e;
+    color: #ffe3e6;
+    font-weight: normal;
+    box-shadow: 0 0 10px rgba(232, 17, 35, 0.6);
+}
+
+/* Arrow keys */
+.fluent-osk-arrow {
+    font-size: 20px;
+    color: #ffffff;
+}
+
+/* Accent key (Enter) when it is a plain rectangular key (ANSI / fallback) */
+.fluent-osk-enter {
+    background-color: rgba(0, 120, 212, 0.34);
+    border-color: rgba(30, 150, 240, 0.85);
+    color: #ffffff;
+}
+
+.fluent-osk-enter:hover {
+    background-color: rgba(0, 120, 212, 0.5);
+    color: #ffffff;
+}
+
+.fluent-osk-enter.pressed {
+    background-color: rgba(0, 120, 212, 0.75);
+}
+
+/* Shift+Enter state: lighter grey-blue accent for line-break (A capo) */
+.fluent-osk-enter-shift {
+    background-color: rgba(70, 135, 195, 0.55) !important;
+    border-color: rgba(170, 210, 255, 0.85) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 6px rgba(0, 120, 212, 0.5) !important;
+}
+
+/* ISO Enter: attore ad L con Cairo, sfondo/bordo CSS sempre trasparenti */
+.fluent-osk-iso-enter,
+.fluent-osk-iso-enter.fluent-osk-enter-shift,
+.fluent-osk-iso-enter:hover,
+.fluent-osk-iso-enter:active {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.fluent-osk-iso-enter-label {
+    color: #ffffff;
+    font-weight: normal;
+    text-align: center;
+}
+
+/* Top panel button active state */
+.panel-button.fluent-osk-btn-active {
+    background-color: rgba(255, 255, 255, 0.22);
+    box-shadow: inset 0 -2px 0 0 #0078d4;
+}
+
+.panel-button.fluent-osk-btn-active StIcon {
+    color: #60cdff;
+}

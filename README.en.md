@@ -1,7 +1,3 @@
-
-
-### `README.en.md` (Inglese)
-
 # fluent-osk
 
 **[Leggi in Italiano](README.md)**

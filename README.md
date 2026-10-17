@@ -1,6 +1,6 @@
 # fluent-osk
 
-**[Italiano](README.md) | [Read in English](README.en.md)**
+**[Read in English](README.en.md)**
 
 ![GNOME Shell](https://img.shields.io/badge/GNOME_Shell-50-blue)
 ![License](https://img.shields.io/badge/License-GPLv3-green)
@@ -12,7 +12,8 @@ On-Screen Keyboard (OSK) indipendente per GNOME Shell 50 con layout TKL con  ges
 ...con calma arrivano
 
 ---
-
+Parzialmente vibe-coded, non ho le competenze necessarie per comprendere tutte le dinamiche di GNOME al punto da creare un'estensione completa
+---
 ## Specifiche Tecniche e Funzionalità
 
 ### Architettura UI e Modalità
@@ -43,5 +44,9 @@ On-Screen Keyboard (OSK) indipendente per GNOME Shell 50 con layout TKL con  ges
   * Aggiungere o rimuovere tasti nella matrice.
   * Modificare i keycode/valori dei tasti esistenti.
   * Sovrascrivere larghezza (width), colore (HEX/RGBA) e label visualizzata per singolo tasto.
-
+non ho l'intenzione di mantenere attiva questa estensione o renderla compatibile con versioni più vecchie di GNOME, spererei in una persona più competente possa recensire e mantenere una buona qualità nel codice. nel caso non si facesse avanti nessuno , questa estensione seguirà direttamente le versioni che userò di linux e GNOME sul mio portatile.
+# bug noti:
+spero di no
 ---
+### non ho l'intenzione di mantenere attiva questa estensione o renderla compatibile con versioni più vecchie di GNOME
+spererei in una persona più competente possa recensire e mantenere una buona qualità nel codice. nel caso non si facesse avanti nessuno , questa estensione seguirà direttamente le versioni che userò di fedora e GNOME sul mio portatile.

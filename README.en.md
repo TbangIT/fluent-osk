@@ -9,6 +9,12 @@ Standalone On-Screen Keyboard (OSK) for GNOME Shell 50 featuring a TKL form fact
 
 ## Demo
 
+move the cursor using the spacebar:
+<img width="1000" height="285" alt="spaceslider" src="https://github.com/user-attachments/assets/1bc6c466-9778-4bc9-a782-9a8b6c2f9f75" />
+
+select and delete text:
+<img width="1000" height="285" alt="backslider" src="https://github.com/user-attachments/assets/1d0c86d2-7fce-4ced-9b43-6085090619ed" />
+
 ---
 partially vibecoded, I don't have the exhaustive skills to understand all the dynamics of gnome to the point of creating an entire extension
 ---

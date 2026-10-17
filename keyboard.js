@@ -55,6 +55,14 @@ export class FluentKeyboard {
         this._backspaceSwiping = false;
         this._backspaceSelectCount = 0;
 
+        // Cattura gesture stage continua
+        this._activeGesture = null;
+        this._gestureBtn = null;
+        this._gestureTouchSeq = null;
+        this._gestureTouchSlot = null;
+        this._gestureIsTouch = false;
+        this._stageGestureId = 0;
+
         this._keyActors = [];
         this._shiftButtons = [];
         this._capsButtons = [];
@@ -109,17 +117,11 @@ export class FluentKeyboard {
         this.actor.connect('event', (actor, event) => {
             const type = event.type();
             if (type === Clutter.EventType.BUTTON_RELEASE || type === Clutter.EventType.TOUCH_END) {
-                if (this._spaceDrifting || this._backspaceSwiping) {
+                if (!this._activeGesture && (this._spaceDrifting || this._backspaceSwiping)) {
                     this._resetGestureStates();
                 }
             }
             return Clutter.EVENT_PROPAGATE;
-        });
-
-        this.actor.connect('leave-event', () => {
-            if (this._spaceDrifting || this._backspaceSwiping) {
-                this._resetGestureStates();
-            }
         });
 
         this._buildHeader();
@@ -554,6 +556,7 @@ export class FluentKeyboard {
 
     _setupIsoEnterEvents(actor, keyDef) {
         actor.connect('event', (a, event) => {
+            if (this._activeGesture) return Clutter.EVENT_STOP;
             const type = event.type();
 
             if (type === Clutter.EventType.BUTTON_PRESS || type === Clutter.EventType.TOUCH_BEGIN) {
@@ -699,6 +702,15 @@ export class FluentKeyboard {
         btn.connect('event', (actor, event) => {
             const type = event.type();
 
+            if (this._activeGesture && this._gestureBtn !== btn) {
+                if (type === Clutter.EventType.BUTTON_PRESS || type === Clutter.EventType.TOUCH_BEGIN ||
+                    type === Clutter.EventType.BUTTON_RELEASE || type === Clutter.EventType.TOUCH_END ||
+                    type === Clutter.EventType.MOTION || type === Clutter.EventType.TOUCH_UPDATE) {
+                    return Clutter.EVENT_STOP;
+                }
+                return Clutter.EVENT_PROPAGATE;
+            }
+
             if (type === Clutter.EventType.BUTTON_PRESS || type === Clutter.EventType.TOUCH_BEGIN) {
                 this._onKeyPress(btn, keyDef, event);
                 return Clutter.EVENT_STOP;
@@ -709,6 +721,7 @@ export class FluentKeyboard {
                 this._onKeyRelease(btn, keyDef, event);
                 return Clutter.EVENT_STOP;
             } else if (type === Clutter.EventType.LEAVE) {
+                if (this._activeGesture) return Clutter.EVENT_PROPAGATE;
                 if (btn._down && !['shift', 'caps', 'altgr', 'ctrl', 'alt'].includes(keyDef.type) && keyDef.behavior !== 'toggle') {
                     if (!this._spaceDrifting && !this._backspaceSwiping) {
                         this._onKeyRelease(btn, keyDef, event);
@@ -867,22 +880,15 @@ export class FluentKeyboard {
             return;
         }
 
-        // Spacebar gesture init
+        // Gesture barra spazio con cattura continua
         if (keyDef.type === 'space') {
-            const [x, y] = event.get_coords();
-            this._spaceStartX = x;
-            this._spaceDrifting = false;
-            this._currentSpaceStep = 0;
+            this._startGesture('space', btn, event);
             return;
         }
 
-        // Backspace swipe gesture init
+        // Gesture swipe backspace con cattura continua
         if (keyDef.type === 'backspace') {
-            const [x, y] = event.get_coords();
-            this._backspaceStartX = x;
-            this._backspaceSwiping = false;
-            this._backspaceSelectCount = 0;
-            this._startKeyRepeat(keyDef);
+            this._startGesture('backspace', btn, event);
             return;
         }
 
@@ -940,17 +946,108 @@ export class FluentKeyboard {
         }
     }
 
-    _onKeyMotion(btn, keyDef, event) {
-        if (!btn._down) return;
-        const type = event.type();
-        const isTouch = (type === Clutter.EventType.TOUCH_UPDATE);
-        const state = (typeof event.get_state === 'function') ? event.get_state() : 0;
-        const isMouseDrag = (type === Clutter.EventType.MOTION && ((state & Clutter.ModifierType.BUTTON1_MASK) !== 0));
-        if (!isTouch && !isMouseDrag) return;
+    _startGesture(type, btn, event) {
+        this._cleanupStageGesture();
 
-        // Spacebar gesture: scorrimento cursore
-        if (keyDef.type === 'space') {
-            const [currentX, currentY] = event.get_coords();
+        this._activeGesture = type;
+        this._gestureBtn = btn;
+        const seq = (typeof event.get_event_sequence === 'function') ? event.get_event_sequence() : null;
+        this._gestureTouchSeq = seq;
+        this._gestureTouchSlot = (seq && typeof seq.get_slot === 'function') ? seq.get_slot() : null;
+        this._gestureIsTouch = (event.type() === Clutter.EventType.TOUCH_BEGIN);
+
+        const [x, y] = event.get_coords();
+        if (type === 'space') {
+            this._spaceStartX = x;
+            this._spaceDrifting = false;
+            this._currentSpaceStep = 0;
+        } else if (type === 'backspace') {
+            this._backspaceStartX = x;
+            this._backspaceSwiping = false;
+            this._backspaceSelectCount = 0;
+            this._startKeyRepeat(btn._keyDef);
+        }
+
+        // Cattura stage per gesture continue fino al rilascio
+        this._stageGestureId = global.stage.connect('captured-event', (stage, ev) => {
+            return this._onCapturedGestureEvent(ev);
+        });
+    }
+
+    _cleanupStageGesture() {
+        if (this._stageGestureId) {
+            global.stage.disconnect(this._stageGestureId);
+            this._stageGestureId = 0;
+        }
+        this._activeGesture = null;
+        this._gestureBtn = null;
+        this._gestureTouchSeq = null;
+        this._gestureTouchSlot = null;
+        this._gestureIsTouch = false;
+    }
+
+    _onCapturedGestureEvent(ev) {
+        if (!this._activeGesture) return Clutter.EVENT_PROPAGATE;
+
+        const type = ev.type();
+
+        if (this._gestureIsTouch) {
+            const seq = (typeof ev.get_event_sequence === 'function') ? ev.get_event_sequence() : null;
+            const slot = (seq && typeof seq.get_slot === 'function') ? seq.get_slot() : null;
+            const isSameTouch = (this._gestureTouchSlot !== null && slot !== null)
+                ? (slot === this._gestureTouchSlot)
+                : (this._gestureTouchSeq === null || seq === this._gestureTouchSeq);
+
+            if (type === Clutter.EventType.TOUCH_BEGIN) {
+                return Clutter.EVENT_STOP;
+            }
+
+            if (type === Clutter.EventType.TOUCH_UPDATE) {
+                if (!isSameTouch) return Clutter.EVENT_STOP;
+                this._handleGestureMotion(ev);
+                return Clutter.EVENT_STOP;
+            }
+
+            if (type === Clutter.EventType.TOUCH_END || type === Clutter.EventType.TOUCH_CANCEL) {
+                if (!isSameTouch) return Clutter.EVENT_STOP;
+                this._endGesture(ev);
+                return Clutter.EVENT_STOP;
+            }
+
+            if (type === Clutter.EventType.BUTTON_PRESS || type === Clutter.EventType.BUTTON_RELEASE || type === Clutter.EventType.MOTION) {
+                return Clutter.EVENT_STOP;
+            }
+        } else {
+            if (type === Clutter.EventType.MOTION) {
+                const state = (typeof ev.get_state === 'function') ? ev.get_state() : 0;
+                if ((state & Clutter.ModifierType.BUTTON1_MASK) === 0) {
+                    this._endGesture(ev);
+                    return Clutter.EVENT_STOP;
+                }
+                this._handleGestureMotion(ev);
+                return Clutter.EVENT_STOP;
+            }
+
+            if (type === Clutter.EventType.BUTTON_RELEASE) {
+                this._endGesture(ev);
+                return Clutter.EVENT_STOP;
+            }
+
+            if (type === Clutter.EventType.BUTTON_PRESS) {
+                return Clutter.EVENT_STOP;
+            }
+        }
+
+        return Clutter.EVENT_PROPAGATE;
+    }
+
+    _handleGestureMotion(event) {
+        const btn = this._gestureBtn;
+        if (!btn || !btn._down) return;
+
+        const [currentX, currentY] = event.get_coords();
+
+        if (this._activeGesture === 'space') {
             const totalDx = currentX - this._spaceStartX;
 
             if (!this._spaceDrifting && Math.abs(totalDx) > 8) {
@@ -974,11 +1071,7 @@ export class FluentKeyboard {
                     this._playSound();
                 }
             }
-        }
-
-        // Backspace absolute swipe-to-select gesture
-        if (keyDef.type === 'backspace') {
-            const [currentX, currentY] = event.get_coords();
+        } else if (this._activeGesture === 'backspace') {
             const totalDx = currentX - this._backspaceStartX;
 
             if (!this._backspaceSwiping && totalDx < -10) {
@@ -1017,7 +1110,74 @@ export class FluentKeyboard {
         }
     }
 
+    _endGesture(event) {
+        const gesture = this._activeGesture;
+        const btn = this._gestureBtn;
+        this._cleanupStageGesture();
+
+        if (!btn) return;
+        btn._down = false;
+        btn.remove_style_pseudo_class('pressed');
+        this._updateKeyStyle(btn, false);
+
+        if (gesture === 'space') {
+            this._stopKeyRepeat();
+            if (this._spaceDrifting) {
+                this._spaceDrifting = false;
+                this._currentSpaceStep = 0;
+                btn.remove_style_class_name('fluent-osk-space-sliding');
+                btn.label = btn._keyDef?.label || 'Spazio';
+                this._updateKeyStyle(btn, false);
+            } else {
+                this._input.tapKey(57);
+            }
+            return;
+        }
+
+        if (gesture === 'backspace') {
+            this._stopKeyRepeat();
+            if (this._backspaceSwiping) {
+                this._backspaceSwiping = false;
+                btn.remove_style_class_name('fluent-osk-backspace-sliding');
+                btn.label = btn._keyDef?.label || 'Backspace';
+                this._updateKeyStyle(btn, false);
+                if (this._backspaceSelectCount > 0) {
+                    this._input.tapKey(14);
+                    this._playSound();
+                }
+                this._backspaceSelectCount = 0;
+                return;
+            }
+            this._input.tapKey(14);
+            if (this._smartPairStack.length > 0) {
+                this._smartPairStack.pop();
+            }
+            return;
+        }
+    }
+
+    _onKeyMotion(btn, keyDef, event) {
+        if (this._activeGesture) {
+            this._handleGestureMotion(event);
+            return;
+        }
+        if (!btn._down) return;
+        const type = event.type();
+        const isTouch = (type === Clutter.EventType.TOUCH_UPDATE);
+        const state = (typeof event.get_state === 'function') ? event.get_state() : 0;
+        const isMouseDrag = (type === Clutter.EventType.MOTION && ((state & Clutter.ModifierType.BUTTON1_MASK) !== 0));
+        if (!isTouch && !isMouseDrag) return;
+
+        if (keyDef.type === 'space' || keyDef.type === 'backspace') {
+            this._handleGestureMotion(event);
+        }
+    }
+
     _onKeyRelease(btn, keyDef, event) {
+        if (this._activeGesture && this._gestureBtn === btn) {
+            this._endGesture(event);
+            return;
+        }
         btn._down = false;
         btn.remove_style_pseudo_class('pressed');
         this._updateKeyStyle(btn, false);
@@ -1125,6 +1285,7 @@ export class FluentKeyboard {
 
     // Reset gesture scorrimento/selezione e rilascio tasti
     _resetGestureStates() {
+        this._cleanupStageGesture();
         this._stopKeyRepeat();
 
         if (this._spaceDrifting || (this._spaceButton && this._spaceButton.has_style_class_name('fluent-osk-space-sliding'))) {
@@ -1826,6 +1987,7 @@ export class FluentKeyboard {
 
     destroy() {
         this._destroyed = true;
+        this._cleanupStageGesture();
         this._stopKeyRepeat();
         if (this._superFallbackId) {
             GLib.source_remove(this._superFallbackId);

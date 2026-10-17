@@ -9,7 +9,9 @@ On-Screen Keyboard (OSK) indipendente per GNOME Shell 50 con layout TKL con  ges
 
 ## Demo
 
-...con calma arrivano
+spostare il cursore usando la spacebar:
+<img width="1000" height="285" alt="spaceslider" src="https://github.com/user-attachments/assets/1bc6c466-9778-4bc9-a782-9a8b6c2f9f75" />
+
 
 ---
 Parzialmente vibe-coded, non ho le competenze necessarie per comprendere tutte le dinamiche di GNOME al punto da creare un'estensione completa
